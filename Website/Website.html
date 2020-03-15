@@ -106,6 +106,10 @@
                 // console.log("Found Visualiser Message")
                 handleVisualiserMessage(jsonMessage["Visualiser"])
             }
+            if ("Alarm" in jsonMessage) {
+                // console.log("Found Alarm Message")
+                handleAlarmMessage(jsonMessage["Alarm"])
+            }
             if ("Wifi" in jsonMessage) {
                 // console.log("Found Wifi Message")
                 handleWifiMessage(jsonMessage.Wifi)
@@ -476,6 +480,52 @@
             }
         }
 
+        function handleAlarmMessage(jsonMessage) {
+            if (typeof jsonMessage === "object") {
+                var newRed = currentRed
+                var newGreen = currentGreen
+                var newBlue = currentBlue
+
+                if (("Red" in jsonMessage)) {
+                    if (typeof jsonMessage.Red === "number") {
+                        newRed = jsonMessage.Red
+                    }
+                }
+                if (("Green" in jsonMessage)) {
+                    if (typeof jsonMessage.Green === "number") {
+                        newGreen = jsonMessage.Green
+                    }
+                }
+                if (("Blue" in jsonMessage)) {
+                    if (typeof jsonMessage.Blue === "number") {
+                        newBlue = jsonMessage.Blue
+                    }
+                }
+                if (("startTime" in jsonMessage)) {
+                    if (typeof jsonMessage.startTime === "number") {
+                        newStartTime = jsonMessage.startTime
+                    }
+                }
+                if (("endTime" in jsonMessage)) {
+                    if (typeof jsonMessage.endTime === "number") {
+                        newEndTime = jsonMessage.endTime
+                    }
+                }
+                if (("startBrightness" in jsonMessage)) {
+                    if (typeof jsonMessage.startBrightness === "number") {
+                        newStartBrightness = jsonMessage.startBrightness
+                    }
+                }
+                if (("endBrightness" in jsonMessage)) {
+                    if (typeof jsonMessage.endBrightness === "number") {
+                        newEndBrightness = jsonMessage.endBrightness
+                    }
+                }
+
+                setPickerColor(colourSelectButton, newRed, newGreen, newBlue)
+            }
+        }
+
         function handleWifiMessage(jsonMessage) {
             // {
             //     "Wifi" : {
@@ -603,6 +653,9 @@
                     <li id="visualiserTabNavItem" class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#Visualiser">Visualiser</a>
                     </li>
+                    <li id="alarmTabNavItem" class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#Alarm">Alarm</a>
+                    </li>
                     <li id="wifiTabNavItem" class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#WfiConfig">Wifi</a>
                     </li>
@@ -646,6 +699,9 @@
                     });
                     $("#visualiserTabNavItem").click(function () {
                         sendMessage({ "Mode": "Visualiser" })
+                    });
+                    $("#alarmTabNavItem").click(function () {
+                        sendMessage({ "Mode": "Alarm" })
                     });
                 </script>
             </div>
@@ -734,6 +790,7 @@
             <button id="confettiButton" type="submit" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Confetti</button>
             <button id="firefliesButton" type="submit" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Fireflies</button>
             <button id="visualiserButton" type="submit" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Visualiser</button>
+            <button id="alarmButton" type="submit" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Alarm</button>
             <button id="wifiButton" type="submit" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Wifi Config</button>
             <button id="infoButton" type="submit" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Info</button>
             <script>
@@ -787,6 +844,10 @@
                 $("#visualiserButton").click(function () {
                     $('#navbarHeader a[href="#Visualiser"]').tab('show')
                     sendMessage({ "Mode": "Visualiser" })
+                });
+                $("#alarmButton").click(function () {
+                    $('#navbarHeader a[href="#Alarm"]').tab('show')
+                    sendMessage({ "Mode": "alarm" })
                 });
                 $("#wifiButton").click(function () {
                     $('#navbarHeader a[href="#WfiConfig"]').tab('show')
@@ -1754,6 +1815,189 @@
                     }
                 }
             </script>
+        </div>
+        <div id="Alarm" class="container pb-5 tab-pane fade">
+            <h2>Alarm Mode</h2>
+            <p>This will set a sunrise alarm for the next day</p>
+
+            <div class="row my-3">
+                <input id="colourSelectButton" class="color col mb-2 mx-2 btn btn-lg btn-outline-light" value="rgb(0,0,0)"></input>
+            </div>
+            <div>
+                <label for="startHour"><b>start Hour</b>: <span id="startHourLabel">8</span>Hr</label>
+                <input id="startHour" type="range" min="0" max="24" step="1" value="8" class="form-control-range custom-range">
+            </div>
+            <div>
+                <label for="startMinute"><b>start Minute</b>: <span id="startMinuteLabel">0</span>Min</label>
+                <input id="startMinute" type="range" min="0" max="60" step="5" value="0" class="form-control-range custom-range">
+            </div>
+            <div>
+                <label for="endHour"><b>end Hour</b>: <span id="endHourLabel">8</span>Hr</label>
+                <input id="endHour" type="range" min="0" max="24" step="1" value="8" class="form-control-range custom-range">
+            </div>
+            <div>
+                <label for="endMinute"><b>end Minute</b>: <span id="endMinuteLabel">0</span>Min</label>
+                <input id="endMinute" type="range" min="0" max="60" step="5" value="1" class="form-control-range custom-range">
+            </div>
+            <div>
+                <label for="startBrightness"><b>start Brightness</b>: <span id="startBrightnessLabel">10</span>%</label>
+                <input id="startBrightness" type="range" min="0" max="100" step="10" value="10" class="form-control-range custom-range">
+            </div>
+            <div>
+                <label for="endBrightness"><b>end Brightness</b>: <span id="endBrightnessLabel">80</span>%</label>
+                <input id="endBrightness" type="range" min="0" max="100" step="10" value="80" class="form-control-range custom-range">
+            </div>
+            <div class="row my-3">
+                <button id="Set" class="col mb-2 mx-2 btn btn-lg btn-outline-light">Set Alarm</button>
+            </div>
+            <script>
+                var currentRed = 0;
+                var currentGreen = 0;
+                var currentBlue = 0;
+                var colourDebunce = Date.now()
+                var visualiserDebunce = Date.now()
+                var setDebounce = Date.now()
+
+                var colourSelectButton = $('#colourSelectButton').colorPicker({
+                    customBG: '#222',
+                    margin: '4px -2px 0',
+                    doRender: 'div div',
+                    preventFocus: true,
+                    animationSpeed: 150,
+                    forceAlpha: false,
+
+                    // demo on how to make plugins... mobile support plugin
+                    buildCallback: function ($elm) {
+                        this.$colorPatch = $elm.prepend('<div class="cp-disp">').find('.cp-disp');
+                    },
+                    cssAddon:
+                        '.cp-xy-slider {width:200px; height:200px;}' +
+                        '.cp-xy-cursor {width:16px; height:16px; border-width:2px; margin:-8px}' +
+                        '.cp-z-slider {height:200px; width:40px;}' +
+                        '.cp-z-cursor {border-width:8px; margin-top:-8px;}' +
+                        '.cp-alpha {height:40px;}' +
+                        '.cp-alpha-cursor {border-width:8px; margin-left:-8px;}',
+
+                    renderCallback: function ($elm, toggled) {
+                        var colors = this.color.colors;
+                        onColourButtonEvent(Math.round(colors.rgb.r * 255), Math.round(colors.rgb.g * 255), Math.round(colors.rgb.b * 255))
+                        setPickerColor(colourSelectButton, Math.round(colors.rgb.r * 255), Math.round(colors.rgb.g * 255), Math.round(colors.rgb.b * 255))
+                    }
+                })
+
+                $("#startHour").on("input", function () {
+                    onVisualiserEvent()
+                });
+                $("#startHour").on("change", function () {
+                    onVisualiserEvent()
+                });
+                $("#startMinute").on("input", function () {
+                    onVisualiserEvent()
+                });
+                $("#startMinute").on("change", function () {
+                    onVisualiserEvent()
+                });
+
+                $("#endHour").on("input", function () {
+                    onVisualiserEvent()
+                });
+                $("#endHour").on("change", function () {
+                    onVisualiserEvent()
+                });
+                $("#endMinute").on("input", function () {
+                    onVisualiserEvent()
+                });
+                $("#endMinute").on("change", function () {
+                    onVisualiserEvent()
+                });
+
+                $("#startBrightness").on("input", function () {
+                    onVisualiserEvent()
+                });
+                $("#startBrightness").on("change", function () {
+                    onVisualiserEvent()
+                });
+                $("#endBrightness").on("input", function () {
+                    onVisualiserEvent()
+                });
+                $("#endBrightness").on("change", function () {
+                    onVisualiserEvent()
+                });
+
+                $("#Set").click(function () {
+                    onSet()
+                });
+
+                function onVisualiserEvent() {
+                    let startHour = parseInt($("#startHour").val(), 10)
+                    let startMinute = parseInt($("#startMinute").val(), 10)
+                    let endHour = parseInt($("#endHour").val(), 10)
+                    let endMinute = parseInt($("#endMinute").val(), 10)
+                    let startBrightness = parseInt($("#startBrightness").val(), 10)
+                    let endBrightness = parseInt($("#endBrightness").val(), 10)
+
+                    $("#startHourLabel").html(startHour)
+                    $("#startMinuteLabel").html(startMinute)
+                    $("#endHourLabel").html(endHour)
+                    $("#endMinuteLabel").html(endMinute)
+                    $("#startBrightnessLabel").html(startBrightness)
+                    $("#endBrightnessLabel").html(endBrightness)
+
+                    msg = {
+                        "State": true,
+                        "Mode": "Alarm",
+                        "Alarm": {
+                            "startTime": startMinute + 60 * startHour,
+                            "endTime": endMinute + 60 * endMinute,
+                            "startBrightness": startBrightness,
+                            "endBrightness": endBrightness
+                        }
+                    }
+
+                    if (msg != lastVisualiserMessaeg && Date.now() - visualiserDebunce > 50) {
+                        lastVisualiserMessaeg = msg
+                        visualiserDebunce = Date.now()
+                        sendMessage(msg)
+                    }
+                }
+
+                function onSet() {
+                    msg = {
+                        "State": true,
+                        "Mode": "Alarm"o
+                        "Alarmr": {
+                            "Set": "true"
+                        }
+                    }
+                    if (Date.now() - setDebounce > 50) {
+                        setDebuonce = Date.now()
+                        sendMessage(msg)
+                    }
+                }
+
+
+                function onColourButtonEvent(red, green, blue) {
+                    if (currentRed != red || currentGreen != green || currentBlue != blue) {
+                        currentRed = red
+                        currentGreen = green
+                        currentBlue = blue
+
+                        msg = {
+                            "State": true,
+                            "Mode": "Alarm",
+                            "Alarmr": {
+                                "Red": red,
+                                "Green": green,
+                                "Blue": blue
+                            }
+                        }
+                        if (Date.now() - colourDebunce > 50) {
+                            colourDebunce = Date.now()
+                            sendMessage(msg)
+                        }
+                    }
+                }
+            </Script>
         </div>
         <div id="WfiConfig" class="container pb-5 tab-pane fade">
             <h2>Wifi Configuration</h2>
