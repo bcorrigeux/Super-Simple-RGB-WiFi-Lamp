@@ -34,7 +34,7 @@
 #define NUM_LEDS 66
 
 // Set your UTC offset - This is the time zone you are in. for example +10 for Sydney or -4 for NYC.
-#define UTC_OFFSET +10
+#define UTC_OFFSET +8
 
 // Set the chipset and color order for the LEDs you are using. For more info on supported hardware see: https://github.com/FastLED/FastLED/wiki/Overview#supported-chipsets.
 #define CHIPSET WS2812B
@@ -54,8 +54,8 @@ int rightLeds[]   = {15, 16, 17};
 
 // Eneter your wifi credentials here - If you would like to enter your wifi credentials now you can with these variables. This is a nice easy 
 // method to get your ESP8266 connected to your network quickly. If you don't you can always set it up later in the wifi portal.
-String SSID = "";
-String Password = "";
+String SSID = "Legion_2.4";
+String Password = "Homebase#2";
 // ########################################################## End of Sketch Variables ##########################################################
 
 class ModeBase

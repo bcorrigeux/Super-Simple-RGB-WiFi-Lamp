@@ -18,4 +18,5 @@ void ledModeInit()
   modes["Visualiser"] = new ModeVisualiser();
   modes["Fireflies"] = new ModeFireflies();
   modes["Saturation Fade"] = new ModeSaturationFade();
+  modes["Alarm"] = new ModeAlarm();
 }
