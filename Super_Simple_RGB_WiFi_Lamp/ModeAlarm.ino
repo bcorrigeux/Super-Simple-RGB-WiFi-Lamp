@@ -1,4 +1,4 @@
-class ModeClock : public ModeBase
+class ModeAlarm : public ModeBase
 {
 private:
     // Config
@@ -13,15 +13,11 @@ private:
     int endBrightness       = 128;
 
     // State
-    bool long lastClockExecution;
     bool keep_light_on = false;
 public:
-    ModeClock() {}
+    ModeAlarm() {}
 
-    virtual void initialize() {
-        clockOnPauseBrightness = 255;
-        lastClockExecution = 0;
-    }
+    virtual void initialize() {}
 
     virtual void render() {
         if (ntpTimeSet) {
@@ -30,20 +26,19 @@ public:
 
 
             if (currentSec > startTime && currentSec < endTime) {
-                keep_light_on = true
+                keep_light_on = true;
                 float currentBrightness =  (currentSec - startTime) / (endTime - startTime);
 
                 for (int i = 0; i < topNumLeds; i++){
                     ledString[i] = CRGB( red * currentBrightness + startBrightness, green * currentBrightness + startBrightness, blue * currentBrightness + startBrightness);
                 }
             }
-            else if (!keep_light_on){ //initially the light should be off till
+            else if (!keep_light_on){ //initially the light should be off till alarm starts going off then keep it on
                 for (int i = 0; i < topNumLeds; i++){
                     ledString[i] = CRGB( 0, 0, 0);
                 }
             }
-            else if ()
-
+        }
     }
 
     virtual void applyConfig(JsonVariant& settings) {
